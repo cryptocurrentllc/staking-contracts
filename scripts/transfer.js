@@ -11,7 +11,7 @@ const contract = require("../artifacts/contracts/SingleStaking.sol/SingleStaking
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
-async function stake(htgAmount) {
+async function transferFrom(sender, receiver, tokenID) {
   const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest'); //get latest nonce
   
   // the transaction
@@ -20,7 +20,7 @@ async function stake(htgAmount) {
     'to': contractAddress,
     'nonce': nonce,
     'gas': 5000000,
-    'data': nftContract.methods.stake(htgAmount).encodeABI()
+    'data': nftContract.methods.transferFrom(sender, receiver, tokenID).encodeABI()
   };
 
 const signPromise = web3.eth.accounts.signTransaction(tx, PRIVATE_KEY);
@@ -37,4 +37,4 @@ signPromise.then((signedTx) => {
   });
 }
 
-stake(web3.utils.toWei('45000', 'ether'));
+transferFrom("0xfA3354A4660aCE44C94aE5D030Db98374F41a763", "0x29Bf2079C9916585e1D16e54cE1f9Ae80d2F3f54", 1);
